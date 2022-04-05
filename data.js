@@ -26,20 +26,20 @@ function getDataById(id){
     
 }
 
-function updateData(data){
+function updateData(person){
     let data = JSON.parse(fs.readFileSync('./products.json', 'utf8'))
     const _id = nextId()
 
-    data[_id] = data
+    data[_id] = person
     data[_id]._id = _id
 
     fs.writeFileSync('./products.json' , JSON.stringify(data , null , 2))
 }
 
-function updateDataWithId(data){
+function updateDataWithId(person){
     let data = JSON.parse(fs.readFileSync('./products.json', 'utf8'))
-    let id = data._id
-    data[id] = data
+    let id = person._id
+    data[id] = person
 
     console.log(data);
 
