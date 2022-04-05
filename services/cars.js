@@ -37,10 +37,10 @@ async function write(data){
 
 async function getAll(){
     const data = await read()
-    // return data
-    return Object
-    .entries(data)
-    .map(([id,v]) => Object.assign( {} , { id } , v))
+    return data
+    // return Object
+    // .entries(data)
+    // .map(([id,v]) => Object.assign( {} , { id } , v))
 }
 
 async function addCar(data){
@@ -69,7 +69,8 @@ module.exports = () => (req,res,next) => {
     req.storage = {
         getAll,
         addCar,
-        getById
+        getById,
+        read
     }
     next()
 }

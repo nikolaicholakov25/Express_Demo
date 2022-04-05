@@ -7,6 +7,7 @@ const { createPost } = require('./controllers/create')
 const { details } = require('./controllers/details')
 const { home } = require('./controllers/home')
 const { notFound } = require('./controllers/notFound')
+const { search } = require('./controllers/search')
 const carService = require('./services/cars')
 
 app.use(express.urlencoded({extended: true}))
@@ -24,6 +25,7 @@ app.get('/about', about)
 app.get('/create', create)
 app.post('/create' , createPost)
 app.get('/details/:id', details)
+app.get('/search' , search)
 
 
 app.all('*', notFound)
