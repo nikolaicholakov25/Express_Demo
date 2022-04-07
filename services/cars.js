@@ -65,12 +65,20 @@ async function getById(id){
     return car[id]
 }
 
+async function deleteCar(id){
+    let data = await getAll()
+    delete data[id]
+
+    await write(data)
+}
+
 module.exports = () => (req,res,next) => {
     req.storage = {
         getAll,
         addCar,
         getById,
-        read
+        read,
+        deleteCar
     }
     next()
 }
