@@ -1,8 +1,8 @@
 
     <main>
-      <h1>Create</h1>
+      <h1>Edit</h1>
       <div class="form">
-        <form action='/create' method="post">
+        <form action='/edit/{{car.id}}' method="post">
           <label for="name">Name</label>
           <input type="text" id="name" name="name" value={{car.name}}>
           <label for="name">Description</label>
@@ -11,7 +11,7 @@
           <input type="text" id="image" name="imageUrl" value={{car.imageUrl}}>
           <label for="difficulty">Price</label>
            <input type="number" id="price" name="price" value={{car.price}}>
-          <input type="submit" value="Create">
+          <input type="submit" value="Edit Car">
         </form>
       </div>
     </main>

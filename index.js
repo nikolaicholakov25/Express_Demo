@@ -12,6 +12,7 @@ const { notFound } = require('./controllers/notFound')
 const { search } = require('./controllers/search')
 const { editGet , editPost } = require('./controllers/edit')
 const carService = require('./services/cars')
+const init = require('./models/index')
 
 app.use(express.urlencoded({extended: true}))
 app.use('/static',express.static('static'))
@@ -23,18 +24,25 @@ app.engine('hbs', hbs.create({
 
 app.set('view engine', 'hbs')
 
-app.get('/', home)
-app.get('/about', about)
-app.get('/create', create)
-app.post('/create' , createPost)
-app.get('/details/:id', details)
-app.get('/search' , search)
-app.get('/delete/:id' , deleteListing)
+start()
 
-app.get('/edit/:id' , editGet)
-app.post('/edit/:id' , editPost)
+async function start(){        
+    await init()
 
-app.all('*', notFound)
+    app.get('/', home)
+    app.get('/about', about)
+    app.get('/create', create)
+    app.post('/create' , createPost)
+    app.get('/details/:id', details)
+    app.get('/search' , search)
+    app.get('/delete/:id' , deleteListing)
+
+    app.get('/edit/:id' , editGet)
+    app.post('/edit/:id' , editPost)
+
+    app.all('*', notFound)
+
+}
 
 
 

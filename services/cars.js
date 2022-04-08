@@ -1,3 +1,6 @@
+const { options } = require('nodemon/lib/config')
+const Car = require('../models/car')
+
 const fs = require('fs').promises
 
 function nextId(){
@@ -9,7 +12,7 @@ function nextId(){
     }
  
     return id.join('')
- }
+}
  
 
 async function read(){
@@ -26,7 +29,7 @@ async function read(){
 
 async function write(data){
     try{
-        await fs.writeFile('./services/data.json' , JSON.stringify(data , null , 2))
+        
     }
     catch (err){
         console.error('Database write error!')
@@ -35,42 +38,78 @@ async function write(data){
     }
 }
 
-async function getAll(){
-    const data = await read()
-    return data
-    // return Object
-    // .entries(data)
-    // .map(([id,v]) => Object.assign( {} , { id } , v))
+async function getAll(query){
+    let options = {}
+
+    if(query.search){
+        options.name = new RegExp(query.search , 'i')
+    } 
+    if(query.from){
+        options.price = {
+            $gte: Number(query.from)
+        }
+    }
+    if(query.to){
+        if(!options.price){
+            options.price = {
+                $lte: Number(query.to)
+            }
+        } else {
+            options.price.$lte = Number(query.to)
+        }
+
+    }
+
+    console.log(options);
+
+    const cars = await Car.find(options)
+    return cars.map(car => ({
+        id: car._id,
+        name: car.name,
+        description: car.description,
+        price: car.price,
+        imageUrl: car.imageUrl
+    }) )
 }
 
-async function addCar(data){
-    const id = nextId()
 
-    const car = {
-        _id: id,
+async function addCar(data){
+
+    const car =  new Car({
         name: data.name,
         description: data.description,
         imageUrl: data.imageUrl,
         price: data.price
-    }
+    })
 
-    let allData = await read()
-    allData[id] = car
-    await write(allData)
+    await car.save()
+
 }
 
 async function getById(id){
-    let car = await read()
-    // console.log(car[id]);
-    return car[id]
+    let car = await Car.findById(id)
+    if(car){
+        return {
+            id: car._id,
+            name: car.name,
+            description: car.description,
+            price: car.price,
+            imageUrl: car.imageUrl 
+        }
+    } else {
+        return undefined
+    }
 }
 
 async function deleteCar(id){
-    let data = await getAll()
-    delete data[id]
-
-    await write(data)
+    await Car.findByIdAndDelete(id)
 }
+
+async function updateCar(id , data){
+    let result = await Car.findByIdAndUpdate(id ,data)
+    return result
+}
+
 
 module.exports = () => (req,res,next) => {
     req.storage = {
@@ -78,7 +117,8 @@ module.exports = () => (req,res,next) => {
         addCar,
         getById,
         read,
-        deleteCar
+        deleteCar,
+        updateCar
     }
     next()
 }
